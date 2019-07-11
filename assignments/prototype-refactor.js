@@ -32,15 +32,18 @@ const rollD = (sides) => {
   * dimensions (These represent the character's size in the video game)
   * destroy() // prototype method that returns: `${this.name} was removed from the game.`
 */
-const GameObject = function ({ name, nickname, dimensions }) {
-   this.createdAt = new Date();
-   this.name = name;
-   this.nickname = nickname || "";
-   this.dimensions = dimensions;
+class GameObject {
+   constructor ({ name, nickname, dimensions }) {
+      this.createdAt = new Date();
+      this.name = name;
+      this.nickname = nickname || "";
+      this.dimensions = dimensions;
+   }
+
+   destroy () {
+      return `${this.name} was removed from the game.`;
+   }
 }
-GameObject.prototype.destroy = function () {
-   return `${this.name} was removed from the game.`;
-};
 
 /*
   === CharacterStats ===
@@ -48,14 +51,16 @@ GameObject.prototype.destroy = function () {
   * takeDamage() // prototype method -> returns the string '<object name> took damage.'
   * should inherit destroy() from GameObject's prototype
 */
-const CharacterStats = function ({ healthPoints, ...rest }) {
-   this.healthPoints = healthPoints;
-   GameObject.call(this, rest);
+class CharacterStats extends GameObject {
+   constructor ({ healthPoints, ...rest }) {
+      this.healthPoints = healthPoints;
+      GameObject.call(this, rest);
+   }
+
+   takeDamage (damage) {
+      return `${this.name} took ${damage} damage.`;
+   }
 }
-CharacterStats.prototype = Object.create(GameObject.prototype);
-CharacterStats.prototype.takeDamage = function (damage) {
-   return `${this.name} took ${damage} damage.`;
-};
 
 /*
   === Humanoid (Having an appearance or character resembling that of a human.) ===
@@ -66,45 +71,48 @@ CharacterStats.prototype.takeDamage = function (damage) {
   * should inherit destroy() from GameObject through CharacterStats
   * should inherit takeDamage() from CharacterStats
 */
-const Humanoid = function ({ team, weapons, language, ...rest }) {
-   this.team = team;
-   this.weapons = weapons;
-   this.language = language;
-   CharacterStats.call(this, rest);
+class Humanoid extends CharacterStats {
+   constructor ({ team, weapons, language, ...rest }) {
+      this.team = team;
+      this.weapons = weapons;
+      this.language = language;
+      CharacterStats.call(this, rest);
+   }
+
+   greet () {
+      return `${this.name} offers a greeting in ${this.language}.`;
+   }
+
+   attack (target) {
+      const BASE_TO_HIT = 8;
+   
+      //which weapon do I use?
+      //random choice for now
+      // const weapon = this.weapons[rollD(this.weapons.length) - 1];
+      const weapon = this.weapons[0];
+   
+      //did we hit the target?
+      const hitTarget = rollD(20) >= BASE_TO_HIT + weapon.toHitMod;
+      //how much damage is caused?
+      let damage = 0;
+      if (hitTarget) {
+         damage = Math.floor(Math.random() * (weapon.maxDmg - weapon.minDmg + 1)) + weapon.minDmg
+      }
+   
+      if (damage > 0) {
+         console.log(`${this.nickname} hits ${target.nickname} with his ${weapon.type}.`);
+      } else {
+         console.log(`${this.nickname} misses ${target.nickname} with his ${weapon.type}.`);
+      }
+   
+      //update target health
+      target.healthPoints -= damage;
+      console.log(target.takeDamage(damage));
+      if (target.healthPoints <= 0) {
+         console.log(target.destroy());
+      }
+   }
 }
-Humanoid.prototype = Object.create(CharacterStats.prototype);
-Humanoid.prototype.greet = function () {
-   return `${this.name} offers a greeting in ${this.language}.`;
-};
-Humanoid.prototype.attack = function (target) {
-   const BASE_TO_HIT = 8;
-
-   //which weapon do I use?
-   //random choice for now
-   // const weapon = this.weapons[rollD(this.weapons.length) - 1];
-   const weapon = this.weapons[0];
-
-   //did we hit the target?
-   const hitTarget = rollD(20) >= BASE_TO_HIT + weapon.toHitMod;
-   //how much damage is caused?
-   let damage = 0;
-   if (hitTarget) {
-      damage = Math.floor(Math.random() * (weapon.maxDmg - weapon.minDmg + 1)) + weapon.minDmg
-   }
-
-   if (damage > 0) {
-      console.log(`${this.nickname} hits ${target.nickname} with his ${weapon.type}.`);
-   } else {
-      console.log(`${this.nickname} misses ${target.nickname} with his ${weapon.type}.`);
-   }
-
-   //update target health
-   target.healthPoints -= damage;
-   console.log(target.takeDamage(damage));
-   if (target.healthPoints <= 0) {
-      console.log(target.destroy());
-   }
-};
 
 /*
   * Inheritance chain: GameObject -> CharacterStats -> Humanoid
