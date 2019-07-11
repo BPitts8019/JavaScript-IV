@@ -52,9 +52,10 @@ class GameObject {
   * should inherit destroy() from GameObject's prototype
 */
 class CharacterStats extends GameObject {
-   constructor ({ healthPoints, ...rest }) {
+   constructor ({ healthPoints, gender, ...rest }) {
+      super(rest);
       this.healthPoints = healthPoints;
-      GameObject.call(this, rest);
+      this.gender = gender;
    }
 
    takeDamage (damage) {
@@ -73,10 +74,10 @@ class CharacterStats extends GameObject {
 */
 class Humanoid extends CharacterStats {
    constructor ({ team, weapons, language, ...rest }) {
+      super(rest);
       this.team = team;
       this.weapons = weapons;
       this.language = language;
-      CharacterStats.call(this, rest);
    }
 
    greet () {
@@ -85,6 +86,7 @@ class Humanoid extends CharacterStats {
 
    attack (target) {
       const BASE_TO_HIT = 8;
+      const pronoun = (this.gender === "M")? "his" : "her";
    
       //which weapon do I use?
       //random choice for now
@@ -100,9 +102,9 @@ class Humanoid extends CharacterStats {
       }
    
       if (damage > 0) {
-         console.log(`${this.nickname} hits ${target.nickname} with his ${weapon.type}.`);
+         console.log(`${this.nickname} hits ${target.nickname} with ${pronoun} ${weapon.type}.`);
       } else {
-         console.log(`${this.nickname} misses ${target.nickname} with his ${weapon.type}.`);
+         console.log(`${this.nickname} misses ${target.nickname} with ${pronoun} ${weapon.type}.`);
       }
    
       //update target health
@@ -127,30 +129,35 @@ class Humanoid extends CharacterStats {
 
 // * Weapons will contain three values: type, minDmg, maxDmg
 
-const Villain = function (props) {
-   Humanoid.call(this, props);
-};
-Villain.prototype = Object.create(Humanoid.prototype);
-Villain.prototype.berserk = function (target) {
-   console.log(`${this.nickname} is berserking. They get two attacks!`);
-   this.attack(target);
-   this.attack(target);
-};
-
-const Hero = function (props) {
-   this.maxHealth = props.healthPoints;
-   Humanoid.call(this, props);
-};
-Hero.prototype = Object.create(Humanoid.prototype);
-Hero.prototype.heal = function () {
-   const healing = Math.round(this.maxHealth / 3);
-   this.healthPoints += healing;
-   if (this.healthPoints > this.maxHealth) {
-      this.healthPoints = this.maxHealth;
+class Villain extends Humanoid {
+   constructor (props) {
+      super(props);
    }
 
-   console.log(`${this.nickname} heals for ${healing} points.`);
-};
+   berserk (target) {
+      const pronoun = (this.gender === "M")? "He" : "She";
+      console.log(`${this.nickname} is berserking. ${pronoun} get two attacks!`);
+      this.attack(target);
+      this.attack(target);
+   }
+}
+
+class Hero extends Humanoid {
+   constructor (props) {
+      super(props);
+      this.maxHealth = props.healthPoints;
+   }
+
+   heal () {
+      const healing = Math.round(this.maxHealth / 3);
+      this.healthPoints += healing;
+      if (this.healthPoints > this.maxHealth) {
+         this.healthPoints = this.maxHealth;
+      }
+   
+      console.log(`${this.nickname} heals for ${healing} points.`);
+   }
+}
 
 
 
@@ -163,6 +170,7 @@ const villain = new Villain({
       height: 4,
    },
    healthPoints: 100,
+   gender: "M",
    name: 'Grommash Hellscream',
    nickname: "Grom",
    team: 'The Horde',
@@ -181,6 +189,7 @@ const hero = new Hero({
       height: 3,
    },
    healthPoints: 80,
+   gender: "M",
    name: 'Arthas Menethil',
    nickname: "Arthas",
    team: 'The Alliance',
@@ -219,10 +228,10 @@ do {
 } while (villain.healthPoints > 0 && hero.healthPoints > 0);
 
 if (villain.healthPoints > 0) {
-   console.log(`${villain.name} Has killed ${hero.name}.`);
+   console.log(`${villain.name} has killed ${hero.name}.`);
    console.log(`${villain.team} Wins!`);
 } else if (hero.healthPoints > 0) {
-   console.log(`${hero.name} Has killed ${villain.name}.`);
+   console.log(`${hero.name} has killed ${villain.name}.`);
    console.log(`${hero.team} Wins!`);
 } else {
    console.log(`Both combatants have killed each other.`);
