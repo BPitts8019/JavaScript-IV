@@ -48,3 +48,18 @@ class Student extends Person {
    }
 }
 
+class TeamLead extends Instructor {
+   constructor ({gradClassName, favInstructor, ...rest}) {
+      super(rest);
+      this.gradClassName = gradClassName;
+      this.favInstructor = favInstructor;
+   }
+
+   standup (channel) {
+      console.log(`${this.name} announces to ${channel}, "@channel standy times!"​​​​​`);
+   }
+
+   debugsCode (student, subject) {
+      console.log(`${this.name} debugs ${student.name}'s code on ${subject}`);
+   }
+}
