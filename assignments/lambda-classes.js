@@ -210,3 +210,12 @@ students.forEach(student => {
 });
 // george.PRAssignment("React 101"); //This should throw an error
 // joe.PRAssignment("React 101"); //This should throw an error
+
+
+console.log(`\n`);
+console.log(`//== Student.sprintChallenge() Tests ==//`);
+students.forEach(student => {
+   student.sprintChallenge("JavaScript-IV");
+});
+// george.sprintChallenge("JavaScript-IV"); //This should throw an error
+// joe.sprintChallenge("JavaScript-IV"); //This should throw an error
