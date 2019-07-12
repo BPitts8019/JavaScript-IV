@@ -63,3 +63,79 @@ class TeamLead extends Instructor {
       console.log(`${this.name} debugs ${student.name}'s code on ${subject}`);
    }
 }
+
+//=== Roster Tests ===//
+   //== Instructors ==//
+const joe = new Instructor({
+   name: "Joe",
+   age: 25,
+   location: "Seattle",
+   specialty: "User Interface",
+   favLanguage: "CSS3",
+   catchPhrase: "What's up my dudes?",
+});
+
+const betty = new Instructor({
+   name: "Betty",
+   age: 52,
+   location: "New York",
+   specialty: "User Interface",
+   favLanguage: "CSS3",
+   catchPhrase: "What's up peeps?",
+});
+
+   //== Team Leads ==//
+const george = new TeamLead();
+const rachel = new TeamLead();
+
+   //== Students ==//
+const bill = new Student({
+   name: "Bill",
+   age: 24,
+   location: "California",
+   previousBackground: "Excellent Adventure",
+   className: "JS101",
+   favSubjects: ["Html", "CSS", "JavaScript"],
+});
+const ted = new Student({
+   name: "Ted",
+   age: 25,
+   location: "California",
+   previousBackground: "Bogus Journey",
+   className: "JS101",
+   favSubjects: ["React", "Redux", "JavaScript", "C"],
+});
+const jen = new Student({
+   name: "Jen",
+   age: 34,
+   location: "Michigan",
+   previousBackground: "Seamstress",
+   className: "JS102",
+   favSubjects: ["C++", "Java", "OOP Concepts"],
+});
+const will = new Student({
+   name: "Will",
+   age: 43,
+   location: "Florida",
+   previousBackground: "Car Sales",
+   className: "Java 101",
+   favSubjects: ["UI design", "CSS", "HTML", "LESS"],
+});
+const sarah = new Student({
+   name: "Sarah",
+   age: 62,
+   location: "Arizona",
+   previousBackground: "Insurance",
+   className: "Lambda Next",
+   favSubjects: ["Comp Science", "AI", "React", "UX Design"],
+});
+
+
+
+
+
+joe.speak();
+joe.demo("Web Fundamentals");
+
+betty.speak();
+betty.demo("UX Design");
