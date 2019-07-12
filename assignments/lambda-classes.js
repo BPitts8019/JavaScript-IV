@@ -25,13 +25,31 @@ class Instructor extends Person {
    grade (student, subject) {
       console.log(`${student.name} receives a perfect score on ${subject}`);
    }
+
+   modifyGrade (student) {
+      const minVal = -10;
+      const maxVal = 10;
+      const gradeMod = Math.floor(Math.random() * (maxVal - minVal + 1)) + minVal;
+      student.grade += gradeMod;
+
+      //clamp grade 0 - 100
+      if (student.grade > 100) {
+         student.grade = 100;
+      } else if (student.grade < 0) {
+         student.grade = 0;
+      }
+
+      //Does the studen graduate?
+      student.graduate();
+   }
 }
 
 class Student extends Person {
-   constructor ({previousBackground, className, favSubjects, ...rest}) {
+   constructor ({previousBackground, className, grade, favSubjects, ...rest}) {
       super(rest);
       this.previousBackground = previousBackground;
       this.className = className;
+      this.grade = grade;
       this.favSubjects = favSubjects;
    }
 
@@ -45,6 +63,14 @@ class Student extends Person {
    
    sprintChallenge (subject) {
       console.log(`${this.name} has begun sprint challenge on ${subject}`);
+   }
+
+   graduate () {
+      if (this.grade >= 70) {
+         console.log(`${this.name} can graduate with a grade of ${this.grade}.`);
+      } else {
+         console.log(`${this.name}'s grade is ${this.grade}. They must continue to learn.`);
+      }
    }
 }
 
@@ -114,6 +140,7 @@ const bill = new Student({
    location: "California",
    previousBackground: "Excellent Adventure",
    className: "JS101",
+   grade: 40,
    favSubjects: ["Html", "CSS", "JavaScript"]
 });
 const ted = new Student({
@@ -122,6 +149,7 @@ const ted = new Student({
    location: "California",
    previousBackground: "Bogus Journey",
    className: "JS101",
+   grade: 100,
    favSubjects: ["React", "Redux", "JavaScript", "C"]
 });
 const jen = new Student({
@@ -130,6 +158,7 @@ const jen = new Student({
    location: "Michigan",
    previousBackground: "Seamstress",
    className: "JS102",
+   grade: 80,
    favSubjects: ["C++", "Java", "OOP Concepts"]
 });
 const will = new Student({
@@ -138,6 +167,7 @@ const will = new Student({
    location: "Florida",
    previousBackground: "Car Sales",
    className: "Java 101",
+   grade: 35,
    favSubjects: ["UI design", "CSS", "HTML", "LESS"]
 });
 const sarah = new Student({
@@ -146,6 +176,7 @@ const sarah = new Student({
    location: "Arizona",
    previousBackground: "Insurance",
    className: "Lambda Next",
+   grade: 25,
    favSubjects: ["Comp Science", "AI", "React", "UX Design"]
 });
 const students = [bill, ted, jen, will, sarah];
@@ -219,3 +250,46 @@ students.forEach(student => {
 });
 // george.sprintChallenge("JavaScript-IV"); //This should throw an error
 // joe.sprintChallenge("JavaScript-IV"); //This should throw an error
+
+
+console.log(`\n`);
+console.log(`//== STRETCH GOAL ==//`);
+console.log(`//== Instructor.modifyGrade() Tests ==//`);
+instructors.forEach(person => {
+   person.modifyGrade(bill);
+});
+teamLeads.forEach(person => {
+   person.modifyGrade(ted);
+});
+// jen.modifyGrade(ted); //This should throw an error
+
+// //-- STATS TEST --//
+// (function () {
+//    const stats = {
+//       hit: 0,
+//       miss: 0
+//    };
+//    const numTests = 10000;
+//    const toHit = 1;
+//    const maxDmg = 10;
+//    const minDmg = -10;
+//    let dieRoll = -1;
+
+//    for (let i=0; i < numTests; i++) {
+//       dieRoll = Math.floor(Math.random() * (maxDmg - minDmg + 1)) + minDmg;
+//       if (!stats[dieRoll]) {
+//          stats[dieRoll] = 1;
+//       } else {
+//          stats[dieRoll]++;
+//       }
+//       // dieRoll = rollD(20);
+//       // if (dieRoll >= toHit) {
+//       //    stats.hit++;
+//       // } else {
+//       //    stats.miss++;
+//       // }
+//    }
+
+//     console.log(JSON.stringify(stats, null, 3));
+//     console.log(`Hit percentage: ${(stats.hit / numTests).toFixed(2) * 100}%`);
+// })();
